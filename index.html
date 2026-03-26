@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TypingTester — Deep Space</title>
   <style>
-    /* ─── RESET & BASE ─────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -33,7 +32,6 @@
       user-select: none;
     }
 
-    /* ─── STARFIELD ────────────────────────────────────────────────── */
     #stars-canvas {
       position: fixed;
       inset: 0;
@@ -41,7 +39,6 @@
       pointer-events: none;
     }
 
-    /* ─── LAYOUT ───────────────────────────────────────────────────── */
     #app {
       position: relative;
       z-index: 1;
@@ -54,7 +51,6 @@
       gap: 22px;
     }
 
-    /* ─── TITLE ────────────────────────────────────────────────────── */
     #title {
       font-size: clamp(1.5rem, 4vw, 2.2rem);
       letter-spacing: 0.22em;
@@ -73,7 +69,6 @@
       50%       { filter: drop-shadow(0 0 24px #f000ff88); }
     }
 
-    /* ─── HUD ──────────────────────────────────────────────────────── */
     #hud {
       display: flex;
       gap: 20px;
@@ -135,7 +130,6 @@
       to   { opacity: .5; }
     }
 
-    /* ─── PARAGRAPH WRAPPER (antigravity float) ────────────────────── */
     #para-wrapper {
       animation: antigravity 3.4s ease-in-out infinite;
       will-change: transform;
@@ -147,7 +141,6 @@
       50%       { transform: translateY(-14px); }
     }
 
-    /* ─── PARAGRAPH DISPLAY BOX ────────────────────────────────────── */
     #para-display {
       background: var(--surface);
       border: 1.5px solid #1a3a5c;
@@ -159,7 +152,6 @@
         0 0 40px #00e5ff10,
         0 24px 60px #00000088,
         inset 0 1px 0 #ffffff0a;
-      /* fixed height so layout doesn't jump */
       min-height: 160px;
       display: flex;
       align-items: center;
@@ -181,7 +173,6 @@
       100% { opacity: 0; transform: scaleX(0); }
     }
 
-    /* fade-mask at top/bottom edges */
     #para-display::before {
       content: '';
       position: absolute;
@@ -192,40 +183,33 @@
       z-index: 2;
     }
 
-    /* ─── SCROLLING CONTAINER ──────────────────────────────────────── */
     #para-scroll {
       width: 100%;
       overflow: hidden;
       position: relative;
-      /* show 5 lines */
       height: calc(1.8em * 5 + 4px);
     }
 
-    /* ─── TEXT (the rendered spans) ───────────────────────────────── */
     #para-text {
       font-size: clamp(1.1rem, 2.4vw, 1.35rem);
       line-height: 1.8em;
       letter-spacing: .04em;
-      word-break: normal;       /* never split a word mid-letter */
+      word-break: normal;      
       word-wrap: normal;
       white-space: normal;
       position: relative;
       transition: transform .32s cubic-bezier(.4,0,.2,1);
     }
 
-    /* word group — stays on one line, wraps as a unit */
     #para-text .word {
       display: inline-block;
-      white-space: nowrap;      /* keeps all letters of the word together */
     }
 
-    /* space between words */
     #para-text .word-space {
       display: inline;
       letter-spacing: 0;
     }
 
-    /* float-away on paragraph completion */
     #para-text.float-away {
       animation: floatAway .5s cubic-bezier(.2, .8, .4, 1) forwards;
     }
@@ -235,7 +219,6 @@
       100% { opacity: 0; transform: translateY(-60px) scale(1.06); }
     }
 
-    /* per-character spans */
     #para-text .ch {
       display: inline;
       color: var(--muted);
@@ -253,7 +236,6 @@
       text-shadow: 0 0 6px #ff3d7177;
     }
 
-    /* blinking cursor underline on current char */
     #para-text .ch.cursor {
       border-bottom: 2.5px solid var(--neon-cyan);
       box-shadow: 0 3px 8px #00e5ff88;
@@ -273,7 +255,6 @@
       50%       { border-bottom-color: transparent; }
     }
 
-    /* ─── PROGRESS BAR ─────────────────────────────────────────────── */
     #progress-track {
       width: min(94vw, 760px);
       height: 4px;
@@ -291,7 +272,6 @@
       box-shadow: 0 0 8px #00e5ff88;
     }
 
-    /* ─── INPUT (hidden but active) ────────────────────────────────── */
     #type-input {
       position: absolute;
       opacity: 0;
@@ -300,7 +280,6 @@
       height: 1px;
     }
 
-    /* ─── CLICK-TO-FOCUS PROMPT ────────────────────────────────────── */
     #focus-prompt {
       font-size: .72rem;
       letter-spacing: .15em;
@@ -312,7 +291,6 @@
 
     #focus-prompt.hidden { opacity: 0; pointer-events: none; }
 
-    /* ─── MISSION REPORT ───────────────────────────────────────────── */
     #report-overlay {
       display: none;
       position: fixed;
@@ -363,7 +341,6 @@
       margin-bottom: 18px;
     }
 
-    /* ── WPM hero block ── */
     #wpm-hero {
       margin: 0 0 22px;
       padding: 18px 0 16px;
@@ -398,7 +375,6 @@
       margin-top: 2px;
     }
 
-    /* ── secondary stats ── */
     .report-row {
       display: flex;
       justify-content: space-between;
@@ -444,7 +420,6 @@
       box-shadow: 0 0 32px #00e5ff88;
     }
 
-    /* ─── TIMER PICKER ─────────────────────────────────────── */
     #timer-picker {
       display: flex;
       align-items: center;
@@ -503,13 +478,11 @@
 
 <canvas id="stars-canvas"></canvas>
 
-<!-- hidden input to capture keystrokes -->
 <input id="type-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" />
 
 <div id="app">
   <div id="title">⌨ Typing Tester</div>
 
-  <!-- Timer picker -->
   <div id="timer-picker">
     <span class="tp-label">Duration:</span>
     <button class="tp-btn" data-sec="15">15s</button>
@@ -518,7 +491,6 @@
     <button class="tp-btn" data-sec="120">120s</button>
   </div>
 
-  <!-- HUD -->
   <div id="hud">
     <div class="hud-card">
       <div class="hud-label">WPM</div>
@@ -534,7 +506,6 @@
     </div>
   </div>
 
-  <!-- Paragraph display -->
   <div id="para-wrapper">
     <div id="para-display">
       <div id="para-scroll">
@@ -543,7 +514,6 @@
     </div>
   </div>
 
-  <!-- Progress bar -->
   <div id="progress-track">
     <div id="progress-fill"></div>
   </div>
@@ -551,20 +521,17 @@
   <div id="focus-prompt">🖱 Click anywhere and start typing…</div>
 </div>
 
-<!-- Mission Report -->
 <div id="report-overlay">
   <div id="report-card">
     <h2>🛸 Mission Report</h2>
     <div class="sub" id="report-sub">30-second session complete</div>
 
-    <!-- WPM hero -->
     <div id="wpm-hero">
       <div class="wh-label">Words Per Minute</div>
       <div class="wh-number" id="final-wpm">—</div>
       <div class="wh-unit">WPM</div>
     </div>
 
-    <!-- secondary stats -->
     <div class="report-row">
       <span class="rl">Accuracy</span>
       <span class="rv" id="final-acc">—</span>
@@ -584,16 +551,12 @@
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════════
-   STARFIELD
-═══════════════════════════════════════════════════════════════════ */
+
 (function () {
   const canvas = document.getElementById('stars-canvas');
   const ctx = canvas.getContext('2d');
   let W, H, stars = [];
-
   function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-
   function createStars(n) {
     stars = [];
     for (let i = 0; i < n; i++) {
@@ -605,7 +568,6 @@
       });
     }
   }
-
   function draw() {
     ctx.clearRect(0, 0, W, H);
     stars.forEach(s => {
@@ -618,107 +580,72 @@
     ctx.globalAlpha = 1;
     requestAnimationFrame(draw);
   }
-
   window.addEventListener('resize', () => { resize(); createStars(220); });
   resize(); createStars(220); draw();
 })();
 
-
-/* ═══════════════════════════════════════════════════════════════════
-   WORD BANK — 200 common English words for dynamic paragraph generation
-═══════════════════════════════════════════════════════════════════ */
 const WORD_BANK = [
-  // articles & determiners
   'the','a','an','this','that','these','those','every','each','some','any','all','no',
-  // pronouns
   'i','you','he','she','it','we','they','me','him','her','us','them','my','your','his',
   'its','our','their','who','which','what',
-  // common verbs
   'is','are','was','were','be','been','have','has','had','do','does','did','will','would',
   'can','could','should','may','might','must','go','come','get','make','know','think',
   'take','see','look','want','give','use','find','tell','ask','seem','feel','try','leave',
   'call','keep','let','begin','show','hear','play','run','move','live','happen','write',
   'become','bring','hold','turn','start','follow','create','remember','believe','allow',
   'without','need','help','build','change','fall','follow','move',
-  // common nouns
   'time','year','people','way','day','man','woman','child','world','life','hand','part',
   'place','case','week','company','system','program','question','number','night','point',
   'city','home','word','fact','work','city','story','idea','body','information','back',
   'space','light','voice','power','country','water','room','book','eye','job','word',
   'line','group','problem','city','play','small','end',
-  // adjectives & adverbs
   'good','new','first','last','long','great','own','other','old','right','big','high',
   'different','small','large','next','early','young','important','few','public','old',
   'real','best','free','fresh','dark','clear','full','open','hard','strong','true','same',
   'able','deep','sure','far','soon','still','just','often','here','also','now','then',
   'always','never','together','already','once','quite','quickly','easily','slowly',
   'usually','really','perhaps','simply','enough','however','around','below','above',
-  // prepositions & conjunctions
   'of','in','to','for','on','with','at','by','from','up','about','into','through',
   'during','before','after','between','out','against','without','under','along','and',
   'but','or','if','so','because','while','although','when','where','since','until','as'
 ];
 
-/* ═══════════════════════════════════════════════════════════════════
-   DYNAMIC PARAGRAPH GENERATOR
-   Builds a fresh ~60-word passage every call, unique every time.
-═══════════════════════════════════════════════════════════════════ */
 function generateParagraph() {
-  const TARGET = 60;   // approximate word count per passage
-
-  // Shuffle the bank
+  const TARGET = 60;   
   const bank = [...WORD_BANK];
   for (let i = bank.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [bank[i], bank[j]] = [bank[j], bank[i]];
   }
-
-  // Draw words with replacement if needed
   const words = [];
   for (let i = 0; i < TARGET; i++) {
     words.push(bank[i % bank.length]);
   }
-
-  // Inject commas every 8-12 words for natural rhythm
   let result = '';
   let i = 0;
   while (i < words.length) {
-    const chunkLen = 8 + Math.floor(Math.random() * 5);  // 8-12 words
+    const chunkLen = 8 + Math.floor(Math.random() * 5); 
     const chunk = words.slice(i, i + chunkLen);
-
-    // Capitalise first word of first chunk (start of passage)
     if (i === 0) chunk[0] = chunk[0].charAt(0).toUpperCase() + chunk[0].slice(1);
-
     result += chunk.join(' ');
     i += chunkLen;
-
-    if (i < words.length) result += ', ';  // comma between chunks
+    if (i < words.length) result += ', ';  
   }
-
-  // End with a period
   result = result.replace(/,?\s*$/, '') + '.';
-
   return result;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   GAME STATE
-═══════════════════════════════════════════════════════════════════ */
-let selectedDuration = 30;   // driven by timer picker
-
+let selectedDuration = 30;   
 let currentPara     = '';
-let charIndex       = 0;   // position in current paragraph
+let charIndex       = 0;  
 let timerInterval   = null;
 let timeLeft        = selectedDuration;
 let started         = false;
 let gameOver        = false;
-
-// stats
 let totalKeystrokes   = 0;
 let correctKeystrokes = 0;
 let parasDone         = 0;
 
-/* ─── DOM ─────────────────────────────────────────────────────── */
 const paraText      = document.getElementById('para-text');
 const typeInput     = document.getElementById('type-input');
 const wpmEl         = document.getElementById('wpm-value');
@@ -730,10 +657,9 @@ const reportOverlay = document.getElementById('report-overlay');
 const reportSub     = document.getElementById('report-sub');
 const pickerBtns    = document.querySelectorAll('.tp-btn');
 
-/* ─── TIMER PICKER ───────────────────────────────────────────── */
 pickerBtns.forEach(btn => {
   btn.addEventListener('click', () => {
-    if (started && !gameOver) return;    // locked during active game
+    if (started && !gameOver) return;    
     selectedDuration = parseInt(btn.dataset.sec, 10);
     pickerBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -746,9 +672,6 @@ function lockPicker(lock) {
   pickerBtns.forEach(b => { b.disabled = lock; });
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════════════════════════════ */
 function initGame() {
   timeLeft          = selectedDuration;
   started           = false;
@@ -768,7 +691,7 @@ function initGame() {
   typeInput.value = '';
   typeInput.disabled = false;
 
-  lockPicker(false);   // re-enable picker on reset
+  lockPicker(false);  
   reportOverlay.classList.remove('show');
   focusPrompt.classList.remove('hidden');
 
@@ -784,9 +707,6 @@ function shuffled(arr) {
   return arr;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   LOAD PARAGRAPH — calls generator for a brand-new passage every time
-═══════════════════════════════════════════════════════════════════ */
 function loadParagraph(withAnimation) {
   currentPara = generateParagraph();
   charIndex   = 0;
@@ -801,35 +721,23 @@ function loadParagraph(withAnimation) {
     renderParagraph();
   }
 }
-
-/* ═══════════════════════════════════════════════════════════════════
-   RENDER PARAGRAPH — words as inline-block groups, no mid-word splits
-═══════════════════════════════════════════════════════════════════ */
-// flat array of all .ch spans indexed by charIndex
 let allSpans = [];
 
 function renderParagraph() {
   paraText.innerHTML = '';
   paraText.style.transform = 'translateY(0)';
   allSpans = [];
-
-  // split into tokens: alternating [word, space, word, space …]
-  // e.g. "hello world" → ["hello"," ","world"]
-  const tokens = currentPara.split(/(\s)/);   // keeps the space as its own token
-
+  const tokens = currentPara.split(/(\s)/);   
   tokens.forEach(token => {
     if (token === '') return;
-
     if (token === ' ') {
-      // space between words — plain inline span
       const sp = document.createElement('span');
       sp.classList.add('ch', 'word-space');
-      sp.textContent = '\u00a0';            // visible non-breaking space
+      sp.textContent = '\u00a0';           
       sp.dataset.char = ' ';
       paraText.appendChild(sp);
       allSpans.push(sp);
     } else {
-      // a word — wrap its letters in an inline-block container
       const wordEl = document.createElement('span');
       wordEl.classList.add('word');
 
@@ -844,26 +752,17 @@ function renderParagraph() {
       paraText.appendChild(wordEl);
     }
   });
-
-  // mark cursor on initial position
   if (allSpans[charIndex]) allSpans[charIndex].classList.add('cursor');
 }
 
-
-/* ═══════════════════════════════════════════════════════════════════
-   UPDATE PROGRESS BAR AND SCROLL
-═══════════════════════════════════════════════════════════════════ */
 function updateProgress() {
   const pct = currentPara.length > 0 ? (charIndex / currentPara.length) * 100 : 0;
   progressFill.style.width = pct + '%';
-
-  // scroll so the cursor line stays in the middle row
   scrollToCursor();
 }
 
 function scrollToCursor() {
   if (!allSpans[charIndex]) return;
-
   const cursorSpan  = allSpans[charIndex];
   const containerH  = document.getElementById('para-scroll').clientHeight;
   const lineH       = parseFloat(getComputedStyle(paraText).lineHeight) || 28;
@@ -873,18 +772,13 @@ function scrollToCursor() {
   paraText.style.transform = `translateY(${-clamped}px)`;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   TIMER
-═══════════════════════════════════════════════════════════════════ */
 function startTimer() {
-  lockPicker(true);   // lock duration picker once game starts
+  lockPicker(true);  
   timerInterval = setInterval(() => {
     timeLeft--;
     timerEl.textContent = timeLeft;
-
     const elapsed = selectedDuration - timeLeft;
     if (elapsed > 0) {
-      // Standard WPM: (correct chars / 5) / minutes
       const liveWPM = Math.round((correctKeystrokes / 5) / (elapsed / 60));
       wpmEl.textContent = liveWPM;
     }
@@ -899,9 +793,6 @@ function startTimer() {
   }, 1000);
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   END GAME
-═══════════════════════════════════════════════════════════════════ */
 function endGame() {
   gameOver = true;
   typeInput.disabled = true;
@@ -928,19 +819,12 @@ function endGame() {
   reportOverlay.classList.add('show');
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   KEY HANDLER — capture every character key
-═══════════════════════════════════════════════════════════════════ */
 document.addEventListener('keydown', handleKey);
 
 function handleKey(e) {
   if (gameOver) return;
-
-  // Ignore modifier-only keys, function keys, etc.
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   if (e.key.length !== 1 && e.key !== 'Backspace') return;
-
-  // Start timer on first real key
   if (!started) {
     started = true;
     focusPrompt.classList.add('hidden');
@@ -958,14 +842,9 @@ function handleKey(e) {
     }
     return;
   }
-
-  // Typed character
   const expected = currentPara[charIndex];
   const typed    = e.key;
-
   totalKeystrokes++;
-
-  // Mark current span correct/wrong
   const span = allSpans[charIndex];
   span.classList.remove('cursor');
   if (typed === expected) {
@@ -977,37 +856,25 @@ function handleKey(e) {
 
   charIndex++;
 
-  // Move cursor
   if (charIndex < currentPara.length) {
     allSpans[charIndex].classList.add('cursor');
     updateProgress();
   } else {
-    // paragraph complete!
     parasDone++;
     updateProgress();
-    // live accuracy update
     const acc = Math.round((correctKeystrokes / totalKeystrokes) * 100);
     accEl.textContent = acc + '%';
     loadParagraph(true);
     return;
   }
-
-  // Live accuracy
   const acc = Math.round((correctKeystrokes / totalKeystrokes) * 100);
   accEl.textContent = acc + '%';
 }
-
-/* ═══════════════════════════════════════════════════════════════════
-   KEEP FOCUS
-═══════════════════════════════════════════════════════════════════ */
 document.addEventListener('click', () => {
   if (!gameOver) typeInput.focus();
 });
-
-/* ═══════════════════════════════════════════════════════════════════
-   BOOT
-═══════════════════════════════════════════════════════════════════ */
 initGame();
+
 </script>
 </body>
 </html>
